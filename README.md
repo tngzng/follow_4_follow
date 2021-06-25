@@ -10,10 +10,9 @@ Instagram can be draining. I've found myself spending hours scrolling through br
 ```
 python3 -m venv .venv
 source .venv/bin/activate
-pip install --upgrade pip
-pip install -r requirements.txt
+pip3 install --upgrade pip && pip3 install -r requirements.txt
 ```
 2. run script
 ```
-python unfollow.py
+python3 unfollow.py
 ```
