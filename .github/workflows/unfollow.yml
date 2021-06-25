@@ -1,8 +1,8 @@
 name: follow 4 follow
+# on: push  #  uncomment for development testing
 on:
   schedule:
-    # At 04:05 on Sat.
-    - cron:  "5 4 * * sat"
+    - cron:  "5 4 * * sat"  # At 04:05 on Sat.
 jobs:
   unfollow:
     runs-on: macos-latest

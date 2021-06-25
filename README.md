@@ -16,3 +16,6 @@ pip3 install --upgrade pip && pip3 install -r requirements.txt
 ```
 python3 unfollow.py
 ```
+
+## checking workflow status
+Go to the [Actions tab](https://github.com/tngzng/follow_4_follow/actions) and click the latest run to view Workflow status. For more info, see [this guide](https://docs.github.com/en/actions/quickstart#viewing-your-workflow-results).
