@@ -13,7 +13,10 @@ jobs:
       - name: Install dependencies
         run: |
           pip install --upgrade pip && pip install -r requirements.txt
-      - name: Run script
+      - name: Print username
         run: |
-          python unfollow.py
+          echo "${{ secrets.INSTAGRAM_USER }}"
+      # - name: Run script
+      #   run: |
+      #     python unfollow.py
       - run: echo "🚥 This job's status is ${{ job.status }}."
