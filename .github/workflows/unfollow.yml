@@ -1,5 +1,8 @@
 name: follow 4 follow
-on: [push]
+on:
+  schedule:
+    # At 04:05 on Sat.
+    - cron:  "5 4 * * sat"
 jobs:
   unfollow:
     runs-on: macos-latest
