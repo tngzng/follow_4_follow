@@ -10,6 +10,7 @@ import os
 from instagram_web_api import Client, ClientCompatPatch, ClientError, ClientLoginError
 
 
+# from: https://github.com/ping/instagram_private_api/issues/170 
 class MyClient(Client):
     @staticmethod
     def _extract_rhx_gis(html):
@@ -81,13 +82,12 @@ def unfollow() -> None:
     authed_web_api = MyClient(
         auto_patch=True,
         authenticate=True,
-        username=os.getenv("INSTAGRAM_USER"),
+        username=os.getenv("INSTAGRAM_USER"),  # TODO: raise error if not found
         password=os.getenv("INSTAGRAM_PASSWORD"),
     )
 
     my_id = authed_web_api.authenticated_user_id
-    # TODO: support pagination
-    followers = authed_web_api.user_followers(my_id, count=50)
+    followers = authed_web_api.user_followers(my_id, count=50)  # TODO: support pagination
     following = authed_web_api.user_following(my_id, count=50)
     follower_handles = {f["username"] for f in followers}
     following_handles = {f["username"] for f in following}
