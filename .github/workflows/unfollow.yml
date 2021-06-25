@@ -12,11 +12,11 @@ jobs:
       - run: echo "The ${{ github.repository }} repository has been cloned to the runner."
       - name: Install dependencies
         run: |
-          pip install --upgrade pip && pip install -r requirements.txt
+          pip3 install --upgrade pip && pip3 install -r requirements.txt
       - name: Run script
         env:
           INSTAGRAM_USER: ${{ secrets.INSTAGRAM_USER }}
           INSTAGRAM_PASSWORD: ${{ secrets.INSTAGRAM_PASSWORD }}
         run: |
-          python unfollow.py
+          python3 unfollow.py
       - run: echo "🚥 This job's status is ${{ job.status }}."
