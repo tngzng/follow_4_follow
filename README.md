@@ -1,6 +1,9 @@
 # follow_4_follow
 A chron job using GitHub Workflows to maintain one-to-one follower relationships on Instagram.
 
+## why?
+Instagram can be draining. I've found myself spending hours scrolling through brand and influencer content that doesn't nourish me in any meaningful way. This script attempts to remedy part of that problem, by only maintaining follow 4 follow relationships (two-way relationships that resemble Facebook friends rather than Twitter followers). This changes an Instagram feed from an endless scroll of peripheral content, to a short and sweet summary of people you actually know and care about.
+
 ## local usage
 1. install dependencies
 
