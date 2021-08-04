@@ -104,15 +104,15 @@ def unfollow() -> None:
     unfollow_handles = following_handles - follower_handles
     unfollow_ids = [f["id"] for f in following if f["username"] in unfollow_handles]
     logging.info(f"found {len(unfollow_ids)} users to unfollow")
-    # for unfollow_id in unfollow_ids:
-    #     logging.info(f"unfollowing user id: {unfollow_id}")
-    #     authed_web_api.friendships_destroy(unfollow_id)
+    for unfollow_id in unfollow_ids:
+        logging.info(f"unfollowing user id: {unfollow_id}")
+        authed_web_api.friendships_destroy(unfollow_id)
 
 
 def paginate_all(
     web_api_func: callable, authed_web_api: MyClient, response_key: str
 ) -> Iterator[Dict[str, Any]]:
-    COUNT = 25  # TODO increase to 50
+    COUNT = 50
     my_id = authed_web_api.authenticated_user_id
 
     has_next = True
