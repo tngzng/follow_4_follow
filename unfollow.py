@@ -6,11 +6,12 @@ import datetime
 import uuid
 import logging
 import os
+from typing import List, Dict, Any
 
 from instagram_web_api import Client, ClientCompatPatch, ClientError, ClientLoginError
 
 
-# from: https://github.com/ping/instagram_private_api/issues/170 
+# from: https://github.com/ping/instagram_private_api/issues/170
 class MyClient(Client):
     @staticmethod
     def _extract_rhx_gis(html):
@@ -87,16 +88,49 @@ def unfollow() -> None:
     )
 
     my_id = authed_web_api.authenticated_user_id
-    followers = authed_web_api.user_followers(my_id, count=50)  # TODO: support pagination
-    following = authed_web_api.user_following(my_id, count=50)
+    followers = paginate_all(
+        authed_web_api.user_followers, authed_web_api, my_id, "edge_followed_by"
+    )
+    following = paginate_all(
+        authed_web_api.user_following, authed_web_api, my_id, "edge_follow"
+    )
     follower_handles = {f["username"] for f in followers}
     following_handles = {f["username"] for f in following}
     unfollow_handles = following_handles - follower_handles
     unfollow_ids = [f["id"] for f in following if f["username"] in unfollow_handles]
     logging.info(f"found {len(unfollow_ids)} users to unfollow")
-    for unfollow_id in unfollow_ids:
-        logging.info(f"unfollowing user id: {unfollow_id}")
-        authed_web_api.friendships_destroy(unfollow_id)
+    # for unfollow_id in unfollow_ids:
+    #     logging.info(f"unfollowing user id: {unfollow_id}")
+    #     authed_web_api.friendships_destroy(unfollow_id)
+
+
+def paginate_all(
+    web_api_func: callable, authed_web_api: MyClient, my_id: str, response_key: str
+) -> List[Dict[str, Any]]:
+    COUNT = 25  # TODO increase to 50
+
+    users = []
+    has_next = True
+    cursor = None
+    while has_next:
+        info = web_api_func(my_id, count=COUNT, extract=False, end_cursor=cursor)
+        _users = [
+            u["node"]
+            for u in info.get("data", {})
+            .get("user", {})
+            .get(response_key, {})
+            .get("edges", [])
+        ]
+        users.extend(_users)
+        page_info = (
+            info.get("data", {})
+            .get("user", {})
+            .get(response_key, {})
+            .get("page_info", {})
+        )
+        cursor = page_info.get("end_cursor", {})
+        has_next = page_info.get("has_next_page", {})
+    return users
 
 
 if __name__ == "__main__":
