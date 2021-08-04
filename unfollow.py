@@ -6,7 +6,7 @@ import datetime
 import uuid
 import logging
 import os
-from typing import List, Dict, Any
+from typing import Iterator, Dict, Any
 
 from instagram_web_api import Client, ClientCompatPatch, ClientError, ClientLoginError
 
@@ -87,13 +87,18 @@ def unfollow() -> None:
         password=os.getenv("INSTAGRAM_PASSWORD"),
     )
 
-    my_id = authed_web_api.authenticated_user_id
-    followers = paginate_all(
-        authed_web_api.user_followers, authed_web_api, my_id, "edge_followed_by"
-    )
-    following = paginate_all(
-        authed_web_api.user_following, authed_web_api, my_id, "edge_follow"
-    )
+    followers = [
+        u
+        for u in paginate_all(
+            authed_web_api.user_followers, authed_web_api, "edge_followed_by"
+        )
+    ]
+    following = [
+        u
+        for u in paginate_all(
+            authed_web_api.user_following, authed_web_api, "edge_follow"
+        )
+    ]
     follower_handles = {f["username"] for f in followers}
     following_handles = {f["username"] for f in following}
     unfollow_handles = following_handles - follower_handles
@@ -105,23 +110,24 @@ def unfollow() -> None:
 
 
 def paginate_all(
-    web_api_func: callable, authed_web_api: MyClient, my_id: str, response_key: str
-) -> List[Dict[str, Any]]:
+    web_api_func: callable, authed_web_api: MyClient, response_key: str
+) -> Iterator[Dict[str, Any]]:
     COUNT = 25  # TODO increase to 50
+    my_id = authed_web_api.authenticated_user_id
 
-    users = []
     has_next = True
     cursor = None
     while has_next:
         info = web_api_func(my_id, count=COUNT, extract=False, end_cursor=cursor)
-        _users = [
+        users = [
             u["node"]
             for u in info.get("data", {})
             .get("user", {})
             .get(response_key, {})
             .get("edges", [])
         ]
-        users.extend(_users)
+        for user in users:
+            yield user
         page_info = (
             info.get("data", {})
             .get("user", {})
@@ -130,7 +136,6 @@ def paginate_all(
         )
         cursor = page_info.get("end_cursor", {})
         has_next = page_info.get("has_next_page", {})
-    return users
 
 
 if __name__ == "__main__":
