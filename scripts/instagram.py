@@ -1,12 +1,8 @@
-import time
-import json
 import random
 import string
 import hashlib
 import datetime
 import uuid
-import logging
-import os
 from typing import Iterator, Dict, Any
 
 from instagram_web_api import Client, ClientCompatPatch, ClientError, ClientLoginError
@@ -67,51 +63,6 @@ class MyClient(Client):
         return login_res
 
 
-def load_env() -> None:
-    # in the prod workflow, GitHub secrets will pre-load the env vars for us
-    # https://docs.github.com/en/actions/reference/encrypted-secrets
-    # but locally, we have to source the env vars ourselves
-    ENV_FILE = "env.json"
-    if os.path.isfile(ENV_FILE):
-        with open(ENV_FILE) as f:
-            env_vars = json.load(f)
-
-        for var_name, val in env_vars.items():
-            os.environ[var_name] = val
-
-
-def unfollow(username: str, password: str) -> None:
-    logging.info(f"Unfollowing accounts from {username}")
-    authed_web_api = MyClient(
-        auto_patch=True,
-        authenticate=True,
-        username=username,
-        password=password,
-    )
-
-    followers = [
-        u
-        for u in paginate_all(
-            authed_web_api.user_followers, authed_web_api, "edge_followed_by"
-        )
-    ]
-    following = [
-        u
-        for u in paginate_all(
-            authed_web_api.user_following, authed_web_api, "edge_follow"
-        )
-    ]
-    follower_handles = {f["username"] for f in followers}
-    following_handles = {f["username"] for f in following}
-    unfollow_handles = following_handles - follower_handles
-    unfollow_ids = [f["id"] for f in following if f["username"] in unfollow_handles]
-    logging.info(f"found {len(unfollow_ids)} users to unfollow")
-    for unfollow_id, unfollow_handle in zip(unfollow_ids, unfollow_handles):
-        logging.info(f"Unfollowing {unfollow_handle}...")
-        authed_web_api.friendships_destroy(unfollow_id)
-        time.sleep(60)
-
-
 def paginate_all(
     web_api_func: callable, authed_web_api: MyClient, response_key: str
 ) -> Iterator[Dict[str, Any]]:
@@ -139,15 +90,3 @@ def paginate_all(
         )
         cursor = page_info.get("end_cursor", {})
         has_next = page_info.get("has_next_page", {})
-
-
-if __name__ == "__main__":
-    logging.getLogger().setLevel(logging.INFO)
-    load_env()
-    CREDENTIALS = os.getenv("INSTAGRAM_CREDENTIALS")
-    # CREDENTIALS are formatted like so:
-    # username_1,password_1;username_2,password_2
-    credential_pairs = CREDENTIALS.split(";")
-    for credential_pair in credential_pairs:
-        username, password = credential_pair.split(",")
-        unfollow(username, password)
