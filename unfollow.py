@@ -1,3 +1,4 @@
+import time
 import json
 import random
 import string
@@ -79,12 +80,13 @@ def load_env() -> None:
             os.environ[var_name] = val
 
 
-def unfollow() -> None:
+def unfollow(username: str, password: str) -> None:
+    logging.info(f"Unfollowing accounts from {username}")
     authed_web_api = MyClient(
         auto_patch=True,
         authenticate=True,
-        username=os.getenv("INSTAGRAM_USER"),  # TODO: raise error if not found
-        password=os.getenv("INSTAGRAM_PASSWORD"),
+        username=username,
+        password=password,
     )
 
     followers = [
@@ -104,9 +106,10 @@ def unfollow() -> None:
     unfollow_handles = following_handles - follower_handles
     unfollow_ids = [f["id"] for f in following if f["username"] in unfollow_handles]
     logging.info(f"found {len(unfollow_ids)} users to unfollow")
-    for unfollow_id in unfollow_ids:
-        logging.info(f"unfollowing user id: {unfollow_id}")
+    for unfollow_id, unfollow_handle in zip(unfollow_ids, unfollow_handles):
+        logging.info(f"Unfollowing {unfollow_handle}...")
         authed_web_api.friendships_destroy(unfollow_id)
+        time.sleep(60)
 
 
 def paginate_all(
@@ -141,4 +144,10 @@ def paginate_all(
 if __name__ == "__main__":
     logging.getLogger().setLevel(logging.INFO)
     load_env()
-    unfollow()
+    CREDENTIALS = os.getenv("INSTAGRAM_CREDENTIALS")
+    # CREDENTIALS are formatted like so:
+    # username_1,password_1;username_2,password_2
+    credential_pairs = CREDENTIALS.split(";")
+    for credential_pair in credential_pairs:
+        username, password = credential_pair.split(",")
+        unfollow(username, password)
