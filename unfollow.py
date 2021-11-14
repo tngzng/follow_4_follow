@@ -145,11 +145,9 @@ if __name__ == "__main__":
     logging.getLogger().setLevel(logging.INFO)
     load_env()
     CREDENTIALS = os.getenv("INSTAGRAM_CREDENTIALS")
-    logging.info(f"CREDENTIALS type: {type(CREDENTIALS)}")
-    logging.info(f"CREDENTIALS len: {len(CREDENTIALS)}")
     # CREDENTIALS are formatted like so:
     # username_1,password_1;username_2,password_2
-    # credential_pairs = CREDENTIALS.split(";")
-    # for credential_pair in credential_pairs:
-    #     username, password = credential_pair.split(",")
-    #     unfollow(username, password)
+    credential_pairs = CREDENTIALS.split(";")
+    for credential_pair in credential_pairs:
+        username, password = credential_pair.split(",")
+        unfollow(username, password)
