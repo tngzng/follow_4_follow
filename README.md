@@ -12,7 +12,7 @@ python3 -m venv .venv
 source .venv/bin/activate
 pip3 install --upgrade pip && pip3 install -r requirements.txt
 ```
-2. set username and password for your account in `env.json`
+2. set username and password for your account in a file called `env.json`
 ```
 {
     "INSTAGRAM_CREDENTIALS": "your-username,your-password"
