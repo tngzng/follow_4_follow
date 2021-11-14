@@ -12,7 +12,13 @@ python3 -m venv .venv
 source .venv/bin/activate
 pip3 install --upgrade pip && pip3 install -r requirements.txt
 ```
-2. run script
+2. set username and password for your account in `env.json`
+```
+{
+    "INSTAGRAM_CREDENTIALS": "your-username,your-password"
+}
+```
+3. run script
 ```
 python3 unfollow.py
 ```
