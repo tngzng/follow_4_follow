@@ -2,12 +2,12 @@ import time
 import logging
 from typing import Iterator, Dict, Any
 
-from instagram import MyClient, paginate_all
+from instagram import WebClient, paginate_all
 
 
-def unfollow_accounts(username: str, password: str) -> None:
+def unfollow(username: str, password: str) -> None:
     logging.info(f"Unfollowing accounts from {username}")
-    # authed_web_api = MyClient(
+    # authed_web_api = WebClient(
     #     auto_patch=True,
     #     authenticate=True,
     #     username=username,

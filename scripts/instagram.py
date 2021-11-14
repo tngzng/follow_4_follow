@@ -9,7 +9,7 @@ from instagram_web_api import Client, ClientCompatPatch, ClientError, ClientLogi
 
 
 # from: https://github.com/ping/instagram_private_api/issues/170
-class MyClient(Client):
+class WebClient(Client):
     @staticmethod
     def _extract_rhx_gis(html):
         options = string.ascii_lowercase + string.digits
@@ -64,7 +64,7 @@ class MyClient(Client):
 
 
 def paginate_all(
-    web_api_func: callable, authed_web_api: MyClient, response_key: str
+    web_api_func: callable, authed_web_api: WebClient, response_key: str
 ) -> Iterator[Dict[str, Any]]:
     COUNT = 50
     my_id = authed_web_api.authenticated_user_id

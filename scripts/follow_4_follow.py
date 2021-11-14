@@ -2,7 +2,8 @@ import logging
 import os
 
 from config import load_env
-from unfollow_accounts import unfollow_accounts
+from unfollow import unfollow
+from remove_followers import remove_followers
 
 if __name__ == "__main__":
     logging.getLogger().setLevel(logging.INFO)
@@ -13,4 +14,5 @@ if __name__ == "__main__":
     credential_pairs = CREDENTIALS.split(";")
     for credential_pair in credential_pairs:
         username, password = credential_pair.split(",")
-        unfollow_accounts(username, password)
+        unfollow(username, password)
+        remove_followers(username, password)
