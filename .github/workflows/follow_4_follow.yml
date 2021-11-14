@@ -1,5 +1,4 @@
 name: follow 4 follow
-# on: push  #  uncomment for development testing
 on:
   workflow_dispatch:
   schedule:
@@ -8,12 +7,8 @@ jobs:
   unfollow:
     runs-on: macos-latest
     steps:
-      - run: echo "The job was automatically triggered by a ${{ github.event_name }} event."
-      - run: echo "This job is now running on a ${{ runner.os }} server hosted by GitHub!"
-      - run: echo "The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
       - name: Check out repository code
         uses: actions/checkout@v2
-      - run: echo "The ${{ github.repository }} repository has been cloned to the runner."
       - name: Install dependencies
         run: |
           pip3 install --upgrade pip && pip3 install -r requirements.txt
@@ -21,5 +16,5 @@ jobs:
         env:
           INSTAGRAM_CREDENTIALS: ${{ secrets.INSTAGRAM_CREDENTIALS }}
         run: |
-          python3 unfollow.py
+          python3 scripts/follow_4_follow.py
       - run: echo "🚥 This job's status is ${{ job.status }}."
