@@ -1,6 +1,7 @@
 name: follow 4 follow
 # on: push  #  uncomment for development testing
 on:
+  workflow_dispatch
   schedule:
     - cron:  "5 4 * * sat"  # At 04:05 on Sat.
 jobs:
