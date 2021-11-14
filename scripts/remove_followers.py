@@ -40,6 +40,6 @@ def remove_followers(username: str, password: str) -> None:
         password=password,
     )
     for remove_id, remove_handle in zip(remove_ids, remove_handles):
-        logging.info(f"Unfollowing {remove_handle}...")
+        logging.info(f"Removing {remove_handle}...")
         authed_private_api.remove_follower(remove_id)
         time.sleep(60)
