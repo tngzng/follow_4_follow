@@ -19,7 +19,7 @@ jobs:
           pip3 install --upgrade pip && pip3 install -r requirements.txt
       - name: Run script
         env:
-          INSTAGRAM_USER: ${{ secrets.INSTAGRAM_CREDENTIALS }}
+          INSTAGRAM_CREDENTIALS: ${{ secrets.INSTAGRAM_CREDENTIALS }}
         run: |
           python3 unfollow.py
       - run: echo "🚥 This job's status is ${{ job.status }}."
