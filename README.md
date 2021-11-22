@@ -20,7 +20,7 @@ pip3 install --upgrade pip && pip3 install -r requirements.txt
 ```
 3. run script
 ```
-python3 unfollow.py
+python scripts/follow_4_follow.py
 ```
 
 ## checking workflow status
